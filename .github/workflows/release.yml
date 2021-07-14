@@ -16,17 +16,26 @@ jobs:
       - name: Install Clang dependencies
         run: sudo apt-get update && sudo apt-get install -y libxcb-composite0-dev musl-dev musl-tools libx11-dev linux-headers-$(uname -r) zlib1g-dev
         
-      - name: Build MUSL static OpenSSL
+      - name: Build musl OpenSSL dependency
         run: |
           sudo ln -s /usr/include/x86_64-linux-gnu/asm /usr/include/x86_64-linux-musl/asm &&     ln -s /usr/include/asm-generic /usr/include/x86_64-linux-musl/asm-generic &&     ln -s /usr/include/linux /usr/include/x86_64-linux-musl/linux
           sudo mkdir /musl
           wget https://github.com/openssl/openssl/archive/OpenSSL_1_1_1f.tar.gz
           tar zxf OpenSSL_1_1_1f.tar.gz 
           cd openssl-OpenSSL_1_1_1f/
-          CC="musl-gcc -fPIE -pie -static -lz -idirafter /usr/include/ -idirafter /usr/include/x86_64-linux-gnu/" ./Configure no-shared no-async --prefix=/musl --openssldir=/musl/ssl linux-x86_64
+          CC="musl-gcc -fPIE -pie -idirafter /usr/include/ -idirafter /usr/include/x86_64-linux-gnu/" ./Configure no-shared no-async --prefix=/musl --openssldir=/musl/ssl linux-x86_64
           make depend
           make -j$(nproc)
           sudo make install
+          
+      - name: Build musl zlib dependency
+        run: |
+          wget http://zlib.net/zlib-1.2.8.tar.gz
+          tar -xf zlib-1.2.8.tar.gz
+          cd zlib-1.2.8
+          CC=musl-gcc ./configure
+          make
+          make install
 
       - name: Set up cargo
         uses: actions-rs/toolchain@v1
