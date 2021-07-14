@@ -21,13 +21,14 @@ jobs:
         with:
           profile: minimal
           toolchain: stable
+          target: x86_64-unknown-linux-musl
           override: true
 
       - name: Build
         uses: actions-rs/cargo@v1
         with:
           command: build
-          args: --release --all --features=extra
+          args: --release --all --features=extra --target x86_64-unknown-linux-musl
 
       - name: Create output directory
         run: mkdir output
@@ -38,8 +39,6 @@ jobs:
           cp README.build.txt output/README.txt
           cp LICENSE output/LICENSE
           rm output/*.d
-          rm output/nu_plugin_core_*
-          rm output/nu_plugin_extra_*
 
       # Note: If OpenSSL changes, this path will need to be updated
       - name: Copy OpenSSL to output
@@ -80,8 +79,6 @@ jobs:
           cp README.build.txt output/README.txt
           cp LICENSE output/LICENSE
           rm output/*.d
-          rm output/nu_plugin_core_*
-          rm output/nu_plugin_extra_*
 
       - name: Upload artifact
         uses: actions/upload-artifact@v2
@@ -129,8 +126,6 @@ jobs:
           cp target\release\nu.exe output\
           cp LICENSE output\
           cp target\release\LICENSE-for-less.txt output\
-          rm target\release\nu_plugin_core_*.exe
-          rm target\release\nu_plugin_extra_*.exe
           cp target\release\nu_plugin_*.exe output\
           cp README.build.txt output\README.txt
           cp target\release\less.exe output\
@@ -287,18 +282,3 @@ jobs:
           asset_path: ./nushell-windows.msi
           asset_name: ${{ steps.info.outputs.windowsdir }}.msi
           asset_content_type: applictaion/x-msi
-
-  winget:
-    name: Publish winget package
-    runs-on: windows-latest
-    needs: release
-    steps:
-      - name: Submit package to Windows Package Manager Community Repository
-        run: |
-          iwr https://aka.ms/wingetcreate/latest -OutFile wingetcreate.exe
-          $nushellVersion="${{ needs.release.outputs.version }}"
-          $nushellInstallerName="nu_$($nushellVersion -replace '\.','_')_windows.msi"
-          $installerUrl = "https://github.com/nushell/nushell/releases/download/$nushellVersion/$nushellInstallerName"
-          .\wingetcreate.exe update Nushell.Nushell -s -v $nushellVersion -u $installerUrl -t ${{ secrets.NUSHELL_PAT }}
-    
-    
