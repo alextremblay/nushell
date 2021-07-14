@@ -12,6 +12,14 @@ jobs:
     steps:
       - name: Check out code
         uses: actions/checkout@v2
+        
+      - name: Cargo Cache
+        uses: actions/cache@v2.1.6
+        with:
+          # A list of files, directories, and wildcard patterns to cache and restore
+          path: /home/runner/.cargo
+          # An explicit key for restoring and saving the cache
+          key: cargo-cache
 
       - name: Install Clang dependencies
         run: sudo apt-get update && sudo apt-get install -y libxcb-composite0-dev musl-dev musl-tools libx11-dev linux-headers-$(uname -r)
