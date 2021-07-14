@@ -186,8 +186,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.ref }}
-          release_name: ${{ steps.info.outputs.version }} Release
+          tag_name: latest
+          release_name: Latest Release
           draft: true
 
       - name: Create Linux Directory
