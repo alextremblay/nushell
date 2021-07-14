@@ -8,13 +8,13 @@ on:
 jobs:
   linux:
     name: Build Linux
-    runs-on: ubuntu-latest
+    runs-on: alpine-latest
     steps:
       - name: Check out code
         uses: actions/checkout@v2
 
       - name: Install Clang dependencies
-        run: sudo apt-get install libxcb-composite0-dev musl-dev musl-tools libx11-dev linux-headers-generic
+        run: apk add libxcb-dev musl-dev musl-tools libx11-dev linux-headers
         
       - name: Build MUSL static OpenSSL
         run: |
