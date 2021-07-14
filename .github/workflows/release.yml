@@ -13,8 +13,8 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v2
 
-      - name: Install libxcb
-        run: sudo apt-get install libxcb-composite0-dev
+      - name: Install Clang dependencies
+        run: sudo apt-get install libxcb-composite0-dev musl-dev musl-tools libx11-dev libssl-dev
 
       - name: Set up cargo
         uses: actions-rs/toolchain@v1
