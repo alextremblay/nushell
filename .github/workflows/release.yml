@@ -29,14 +29,14 @@ jobs:
           make -j$(nproc)
           sudo make install
           
-      - name: Build musl zlib dependency
-        run: |
-          wget http://zlib.net/zlib-1.2.11.tar.gz
-          tar -xf zlib-1.2.11.tar.gz
-          cd zlib-1.2.11
-          CC=musl-gcc ./configure
-          make
-          sudo make install
+#       - name: Build musl zlib dependency
+#         run: |
+#           wget http://zlib.net/zlib-1.2.11.tar.gz
+#           tar -xf zlib-1.2.11.tar.gz
+#           cd zlib-1.2.11
+#           CC=musl-gcc ./configure
+#           make
+#           sudo make install
 
       - name: Set up cargo
         uses: actions-rs/toolchain@v1
