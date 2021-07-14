@@ -23,7 +23,7 @@ jobs:
           wget https://github.com/openssl/openssl/archive/OpenSSL_1_1_1f.tar.gz
           tar zxf OpenSSL_1_1_1f.tar.gz 
           cd openssl-OpenSSL_1_1_1f/
-          CC="musl-gcc -fPIE -pie -static -idirafter /usr/include/ -idirafter /usr/include/x86_64-linux-gnu/" ./Configure no-shared no-async -DOPENSSL_NO_SECURE_MEMORY --prefix=/musl --openssldir=/musl/ssl linux-x86_64
+          CC="musl-gcc -fPIE -pie -static -idirafter /usr/include/ -idirafter /usr/include/x86_64-linux-gnu/" ./Configure no-shared no-async --prefix=/musl --openssldir=/musl/ssl linux-x86_64
           make depend
           make -j$(nproc)
           sudo make install
