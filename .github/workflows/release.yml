@@ -17,7 +17,9 @@ jobs:
         uses: actions/cache@v2.1.6
         with:
           # A list of files, directories, and wildcard patterns to cache and restore
-          path: /home/runner/.cargo
+          path: |
+            /home/runner/.cargo
+            /usr/share/rust/.cargo
           # An explicit key for restoring and saving the cache
           key: cargo-cache
 
@@ -60,10 +62,10 @@ jobs:
           command: build
           args: --release --all --features=extra --target x86_64-unknown-linux-musl
           use-cross: true
-#         env:
-#           PKG_CONFIG_ALLOW_CROSS: 1
-#           OPENSSL_STATIC: true
-#           CPATH: /usr/include/:/usr/include/x86_64-linux-gnu/:/usr/include/x86_64-linux-musl/
+        env:
+          PKG_CONFIG_ALLOW_CROSS: 1
+          OPENSSL_STATIC: true
+          CPATH: /usr/include/:/usr/include/x86_64-linux-musl/
 
       - name: Create output directory
         run: mkdir output
