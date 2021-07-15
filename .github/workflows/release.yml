@@ -65,7 +65,7 @@ jobs:
         env:
           PKG_CONFIG_ALLOW_CROSS: 1
           OPENSSL_STATIC: true
-          CPATH: /usr/include/:/usr/include/x86_64-linux-musl/
+#           CPATH: /usr/include/:/usr/include/x86_64-linux-musl/
 
       - name: Create output directory
         run: mkdir output
