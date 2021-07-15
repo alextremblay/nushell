@@ -24,27 +24,27 @@ jobs:
       - name: Install Clang dependencies
         run: sudo apt-get update && sudo apt-get install -y libxcb-composite0-dev musl-dev musl-tools libx11-dev linux-headers-$(uname -r)
         
-      - name: Build musl OpenSSL dependency
-        run: |
-          sudo ln -s /usr/include/x86_64-linux-gnu/asm /usr/include/x86_64-linux-musl/asm 
-          sudo ln -s /usr/include/asm-generic /usr/include/x86_64-linux-musl/asm-generic
-          sudo ln -s /usr/include/linux /usr/include/x86_64-linux-musl/linux
-          wget https://github.com/openssl/openssl/archive/OpenSSL_1_1_1f.tar.gz
-          tar zxf OpenSSL_1_1_1f.tar.gz 
-          cd openssl-OpenSSL_1_1_1f/
-          CC="musl-gcc -fPIE -pie -idirafter /usr/include/ -idirafter /usr/include/x86_64-linux-gnu/" ./Configure no-shared no-async linux-x86_64
-          make depend
-          make -j$(nproc)
-          sudo make install
+#       - name: Build musl OpenSSL dependency
+#         run: |
+#           sudo ln -s /usr/include/x86_64-linux-gnu/asm /usr/include/x86_64-linux-musl/asm 
+#           sudo ln -s /usr/include/asm-generic /usr/include/x86_64-linux-musl/asm-generic
+#           sudo ln -s /usr/include/linux /usr/include/x86_64-linux-musl/linux
+#           wget https://github.com/openssl/openssl/archive/OpenSSL_1_1_1f.tar.gz
+#           tar zxf OpenSSL_1_1_1f.tar.gz 
+#           cd openssl-OpenSSL_1_1_1f/
+#           CC="musl-gcc -fPIE -pie -idirafter /usr/include/ -idirafter /usr/include/x86_64-linux-gnu/" ./Configure no-shared no-async linux-x86_64
+#           make depend
+#           make -j$(nproc)
+#           sudo make install
           
-      - name: Build musl zlib dependency
-        run: |
-          wget http://zlib.net/zlib-1.2.11.tar.gz
-          tar -xf zlib-1.2.11.tar.gz
-          cd zlib-1.2.11
-          CC=musl-gcc ./configure --static
-          make
-          sudo make install
+#       - name: Build musl zlib dependency
+#         run: |
+#           wget http://zlib.net/zlib-1.2.11.tar.gz
+#           tar -xf zlib-1.2.11.tar.gz
+#           cd zlib-1.2.11
+#           CC=musl-gcc ./configure --static
+#           make
+#           sudo make install
 
       - name: Set up cargo
         uses: actions-rs/toolchain@v1
@@ -59,10 +59,11 @@ jobs:
         with:
           command: build
           args: --release --all --features=extra --target x86_64-unknown-linux-musl
-        env:
-          PKG_CONFIG_ALLOW_CROSS: 1
-          OPENSSL_STATIC: true
-          CPATH: /usr/include/:/usr/include/x86_64-linux-gnu/:/usr/include/x86_64-linux-musl/
+          use-cross: true
+#         env:
+#           PKG_CONFIG_ALLOW_CROSS: 1
+#           OPENSSL_STATIC: true
+#           CPATH: /usr/include/:/usr/include/x86_64-linux-gnu/:/usr/include/x86_64-linux-musl/
 
       - name: Create output directory
         run: mkdir output
