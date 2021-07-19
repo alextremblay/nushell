@@ -16,18 +16,12 @@ jobs:
         run: |
           yum update && yum groupinstall -y 'Development Tools'
           yum install -y openssl-static zlib-devel git
-          
-      - name: Check out code
-        run: |
-          git clone https://github.com/nushell/nushell
-          
-      - name: Set up cargo
-        run: | 
-          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-          rustup default stable
 
       - name: Build
         run: |
+          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+          rustup default stable
+          git clone https://github.com/nushell/nushell
           cd nushell
           cargo build --release --all --features=extra
         env:
