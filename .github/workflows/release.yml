@@ -12,34 +12,36 @@ jobs:
     container: konstin2/maturin
     steps:
 
-      - name: Install Clang dependencies
-        run: |
-          yum update && yum groupinstall -y 'Development Tools'
-          yum install -y openssl-static zlib-devel git
+      - name: test
+        run: pwd
+#       - name: Install Clang dependencies
+#         run: |
+#           yum update && yum groupinstall -y 'Development Tools'
+#           yum install -y openssl-static zlib-devel git
 
-      - name: Build
-        run: |
-          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-          rustup default stable
-          git clone https://github.com/nushell/nushell
-          cd nushell
-          cargo build --release --all --features=extra
-        env:
-          OPENSSL_STATIC: true
+#       - name: Build
+#         run: |
+#           curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+#           rustup default stable
+#           git clone https://github.com/nushell/nushell
+#           cd nushell
+#           cargo build --release --all --features=extra
+#         env:
+#           OPENSSL_STATIC: true
 
-      - name: Prepare artifact
-        run: |
-          mkdir output
-          cp nushell/target/release/nu* output/
-          cp nushell/README.build.txt output/README.txt
-          cp nushell/LICENSE output/LICENSE
-          rm output/*.d
+#       - name: Prepare artifact
+#         run: |
+#           mkdir output
+#           cp nushell/target/release/nu* output/
+#           cp nushell/README.build.txt output/README.txt
+#           cp nushell/LICENSE output/LICENSE
+#           rm output/*.d
 
-      - name: Upload artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: linux
-          path: output/*
+#       - name: Upload artifact
+#         uses: actions/upload-artifact@v2
+#         with:
+#           name: linux
+#           path: output/*
 
 #   macos:
 #     name: Build macOS
