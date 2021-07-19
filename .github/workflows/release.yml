@@ -9,62 +9,28 @@ jobs:
   linux:
     name: Build Linux
     runs-on: ubuntu-latest
+    container: konstin2/maturin
     steps:
       - name: Check out code
         uses: actions/checkout@v2
-        
-#       - name: Cargo Cache
-#         uses: actions/cache@v2.1.6
-#         with:
-#           # A list of files, directories, and wildcard patterns to cache and restore
-#           path: |
-#             /home/runner/.cargo
-#             /usr/share/rust/.cargo
-#           # An explicit key for restoring and saving the cache
-#           key: cargo-cache
 
       - name: Install Clang dependencies
-        run: sudo apt-get update && sudo apt-get install -y libxcb-composite0-dev musl-dev musl-tools libx11-dev linux-headers-$(uname -r)
-        
-      - name: Build musl OpenSSL dependency
-        run: |
-          sudo ln -s /usr/include/x86_64-linux-gnu/asm /usr/include/x86_64-linux-musl/asm 
-          sudo ln -s /usr/include/asm-generic /usr/include/x86_64-linux-musl/asm-generic
-          sudo ln -s /usr/include/linux /usr/include/x86_64-linux-musl/linux
-          wget https://github.com/openssl/openssl/archive/OpenSSL_1_1_1f.tar.gz
-          tar zxf OpenSSL_1_1_1f.tar.gz 
-          cd openssl-OpenSSL_1_1_1f/
-          CC="musl-gcc -fPIE -pie -idirafter /usr/include/ -idirafter /usr/include/x86_64-linux-gnu/" ./Configure no-shared no-async linux-x86_64
-          make depend
-          make -j$(nproc)
-          sudo make install
-          
-      - name: Build musl zlib dependency
-        run: |
-          wget http://zlib.net/zlib-1.2.11.tar.gz
-          tar -xf zlib-1.2.11.tar.gz
-          cd zlib-1.2.11
-          CC=musl-gcc ./configure --static
-          make
-          sudo make install
+        run: sudo libxcb-composite0-dev build-essential libx11-dev curl wget pkg-config libssl-dev
 
       - name: Set up cargo
         uses: actions-rs/toolchain@v1
         with:
           profile: minimal
           toolchain: stable
-          target: x86_64-unknown-linux-musl
           override: true
 
       - name: Build
         uses: actions-rs/cargo@v1
         with:
           command: build
-          args: --release --target x86_64-unknown-linux-musl
+          args: --release --all --features=extra
         env:
-          PKG_CONFIG_ALLOW_CROSS: 1
           OPENSSL_STATIC: true
-          CPATH: /usr/include/:/usr/include/x86_64-linux-musl/
 
       - name: Create output directory
         run: mkdir output
@@ -75,10 +41,6 @@ jobs:
           cp README.build.txt output/README.txt
           cp LICENSE output/LICENSE
           rm output/*.d
-
-      # Note: If OpenSSL changes, this path will need to be updated
-      - name: Copy OpenSSL to output
-        run: cp /usr/lib/x86_64-linux-gnu/libssl.so.1.1 output/
 
       - name: Upload artifact
         uses: actions/upload-artifact@v2
