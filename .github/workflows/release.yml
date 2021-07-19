@@ -25,6 +25,7 @@ jobs:
       - name: Set up cargo
         run: | 
           curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+          rustup default stable
 
       - name: Build
         run: cargo build --release --all --features=extra
