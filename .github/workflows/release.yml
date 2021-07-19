@@ -11,8 +11,6 @@ jobs:
     runs-on: ubuntu-latest
     container: konstin2/maturin
     steps:
-      - name: Check out code
-        uses: actions/checkout@v2
 
       - name: Install Clang dependencies
         run: |
