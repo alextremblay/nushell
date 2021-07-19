@@ -14,8 +14,8 @@ jobs:
 
       - name: Install Clang dependencies
         run: |
-          sudo yum update && yum groupinstall -y 'Development Tools'
-          sudo yum install -y openssl-static zlib-devel git
+          yum update && yum groupinstall -y 'Development Tools'
+          yum install -y openssl-static zlib-devel git
           
       - name: Check out code
         run: |
@@ -31,12 +31,10 @@ jobs:
         env:
           OPENSSL_STATIC: true
 
-      - name: Create output directory
-        run: mkdir output
-
-      - name: Copy files to output
+      - name: Prepare artifact
         run: |
-          cp target/release/nu target/release/nu_plugin_* output/
+          mkdir output
+          cp target/release/nu* output/
           cp README.build.txt output/README.txt
           cp LICENSE output/LICENSE
           rm output/*.d
